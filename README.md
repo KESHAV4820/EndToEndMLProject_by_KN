@@ -1,0 +1,1 @@
+## setting up our first professional Industrial Grade End to End ML Operations Project. Remember this till you need it in the life. 

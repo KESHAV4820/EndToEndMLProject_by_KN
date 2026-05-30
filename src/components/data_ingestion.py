@@ -9,8 +9,12 @@ from sklearn.model_selection import train_test_split
 
 from dataclasses import dataclass
 
-from src.components.data_transformation import DataTransformation
 from src.components.data_transformation import DataTransformationConfig
+from src.components.data_transformation import DataTransformation
+from src.components.model_trainer import ModelTrainerConfig
+from src.components.model_trainer import ModelTrainer
+
+script_name = os.path.basename(__file__) # to get the name of the current script file
 
 @dataclass
 class DataIngestionConfig:
@@ -23,13 +27,13 @@ class DataIngestion:
         self.ingestion_config = DataIngestionConfig()
 
     def initiate_data_ingestion(self):
-        logging.info("Entered the data ingestion method or component")
+        logging.info(f"{script_name} Entered the data ingestion method or component")
         try:
             
             df = pd.read_csv(os.path.join('C:\\Users\\kesha\\OneDrive\\Desktop\\EndToEndMLProjectBYKN\\notebook\\data\\stud.csv'))
-            logging.info("Read the dataset as dataframe")
+            logging.info(f"{script_name} Read the dataset as dataframe")
             if df is None:
-                raise CustomException("Failed to enter the data into dataframe df. do your due diligance", sys)
+                raise CustomException(f"{script_name} Failed to enter the data into dataframe df. do your due diligance", sys)
             
             '''
             👆 this area is actually the area of creativity. Here you can read the data from 
@@ -47,18 +51,18 @@ class DataIngestion:
             
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)
             df.to_csv(self.ingestion_config.raw_data_path, index=False)
-            logging.info(f"Raw data is saved at {self.ingestion_config.raw_data_path}")
+            logging.info(f"{script_name} Raw data is saved at {self.ingestion_config.raw_data_path}")
 
-            logging.info("Train test split initiated")
+            logging.info(f"{script_name} Train test split initiated")
             train_set, test_set = train_test_split(df, test_size=0.2, random_state=42)
 
             train_set.to_csv(self.ingestion_config.train_data_path, index=False)
-            logging.info(f"Train data is saved at {self.ingestion_config.train_data_path}")
+            logging.info(f"{script_name} Train data is saved at {self.ingestion_config.train_data_path}")
 
             test_set.to_csv(self.ingestion_config.test_data_path, index=False)
-            logging.info(f"Test data is saved at {self.ingestion_config.test_data_path}")
+            logging.info(f"{script_name} Test data is saved at {self.ingestion_config.test_data_path}")
 
-            logging.info("Ingestion of the data is completed")
+            logging.info(f"{script_name} Ingestion of the data is completed")
 
             return (
                 self.ingestion_config.train_data_path,
@@ -67,7 +71,7 @@ class DataIngestion:
             )
 
         except Exception as e:
-            logging.error(f"Error occurred in data ingestion: {e}")
+            logging.error(f"{script_name} Error occurred in data ingestion: {e}")
             raise CustomException(e, sys)
         
 if __name__ == "__main__":
@@ -75,6 +79,14 @@ if __name__ == "__main__":
     train_data,test_data = obj.initiate_data_ingestion()
 
     data_transformation = DataTransformation()
-    data_transformation.initiate_data_transformation(train_data, test_data)
+    train_arr, test_arr = data_transformation.initiate_data_transformation(train_data, test_data)
+
+    model_trainer = ModelTrainer()
+    print( model_trainer.initiate_model_trainer(
+        train_arr, 
+        test_arr, 
+        # preprocessor_path=data_transformation.data_transformation_config.preprocessor_obj_file_path
+        ))
+    # print(f"R2 square value: {r2_square}")
 
 

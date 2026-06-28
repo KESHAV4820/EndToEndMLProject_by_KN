@@ -5,9 +5,10 @@ from src.exception import CustomException
 from src.logger import logging
 from src.utils import (
     save_object,
-    evaluate_models
+    evaluate_models,
+    read_yaml
 )
-from src.components.data_transformation import DataTransformation
+# from src.components.data_transformation import DataTransformation
 
 
 from sklearn.ensemble import (
@@ -21,11 +22,9 @@ from sklearn.tree import DecisionTreeRegressor
 from xgboost import XGBRegressor
 from catboost import CatBoostRegressor
 
-from sklearn.metrics import (
-    r2_score, accuracy_score, 
-    classification_report, confusion_matrix, 
-    f1_score, precision_score, recall_score
-    )
+from sklearn.metrics import r2_score
+
+from src.constants import ROOT_DIR
 
 script_name = os.path.basename(__file__) # to get the name of the current script file
 
@@ -33,6 +32,8 @@ from dataclasses import dataclass
 @dataclass
 class ModelTrainerConfig:
     trained_model_file_path: str = os.path.join('artifacts', 'model.pkl')
+    # model_params_file_path: str = os.path.join(ROOT_DIR, 'config', 'model_params.yaml')
+    model_params_file_path: str = os.path.join('config', 'model_params.yaml')
 
 class ModelTrainer:
     def __init__(self):
@@ -47,20 +48,30 @@ class ModelTrainer:
             models = {
                 "Random Forest": RandomForestRegressor(),
                 "Gradient Boosting": GradientBoostingRegressor(),
-                "AdaBoost": AdaBoostRegressor(),
+                "AdaBoost Regressor": AdaBoostRegressor(),
                 "Linear Regression": LinearRegression(),
                 "K-Neighbors Regressor": KNeighborsRegressor(),
                 "Decision Tree": DecisionTreeRegressor(),
-                "XGBRegressor": XGBRegressor(),
+                "XGB Regressor": XGBRegressor(),
                 "CatBoosting Regressor": CatBoostRegressor(verbose=False)
             }
 
+            # load hyperparameter grid from YAML config # lagacy code
+            # config_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'model_params.yaml')
+            # config_path = os.path.abspath(config_path)
+            # params = read_yaml(config_path)
+
+
+            # config_path = os.path.join(ROOT_DIR, 'config', 'model_params.yaml')
+            params = read_yaml(self.model_trainer_config.model_params_file_path)
+
             logging.info(f"{script_name} Training and evaluating models")
             model_report: dict = evaluate_models(
-                X_train=X_train, y_train=y_train, 
-                X_test=X_test, y_test=y_test, 
-                models=models
-                )
+                X_train=X_train, y_train=y_train,
+                X_test=X_test, y_test=y_test,
+                models=models,
+                param=params
+            )
             logging.info(f"{script_name} Model evaluation completed.")
             
             # to get the best model score from the dictionary

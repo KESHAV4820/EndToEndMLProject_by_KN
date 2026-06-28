@@ -8,3 +8,4 @@ catboost
 xgboost
 dill
 # -e .
+PyYAML

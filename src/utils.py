@@ -15,10 +15,6 @@ import yaml
 
 script_name = os.path.basename(__file__) # to get the name of the current script file
 
-import os
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))  # points to src/
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 def save_object(file_path,obj):
     try:
         dir_path=os.path.dirname(file_path)

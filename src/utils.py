@@ -26,6 +26,7 @@ def save_object(file_path,obj):
     except Exception as e:
         raise CustomException(e,sys)
     
+    
 def evaluate_models(X_train,y_train,X_test,y_test,models,param):
     try:
         logging.info(f"{script_name}: Evaluating models using GridSearchCV and r2 score.")
@@ -57,6 +58,8 @@ def evaluate_models(X_train,y_train,X_test,y_test,models,param):
 
     except Exception as e:
         raise CustomException(e,sys)
+    
+
 def read_yaml(file_path: str) -> dict:
     try:
         logging.info(f"{script_name}: Trying to read YAML file from path: {file_path}")
@@ -70,3 +73,18 @@ def read_yaml(file_path: str) -> dict:
         raise                        # let your own exceptions pass through clean
     except Exception as e:
         raise CustomException(e, sys)
+    
+
+def load_object(file_path):
+    try:
+        logging.info(f"{script_name}: Loading object from file: {file_path}")
+        with open(file_path,'rb') as file_obj:
+            return pickle.load(file_obj)
+    except CustomException:
+        raise                        # let your own exceptions pass through clean
+    except FileNotFoundError as e:
+        raise CustomException(f"{script_name}: File not found: {file_path}", sys) from e
+    except Exception as e:
+        raise CustomException(e,sys)
+    
+

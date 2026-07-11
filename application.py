@@ -51,6 +51,10 @@ def predict_datapoint():
     
 
 if __name__=="__main__":
-    app.run(host="0.0.0.0",port=8087,debug=True)
+    app.run(
+        host="0.0.0.0",
+        # port=8087,
+        # debug=True # has to be commented when running in production environment, otherwise it will keep restarting the server
+        )
 
 

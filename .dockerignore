@@ -1,0 +1,14 @@
+E2EMLProject/
+.E2EMLProject/
+
+__pycache__/
+*.pyc
+
+.git/
+.gitignore
+
+.ipynb_checkpoints/
+
+artifacts/s
+
+*.pkl

@@ -9,6 +9,6 @@ __pycache__/
 
 .ipynb_checkpoints/
 
-artifacts/s
+artifacts/
 
 *.pkl
